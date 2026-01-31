@@ -15,7 +15,7 @@
 * Create SA:
   * gcloud iam service-accounts create github-ci \
     --display-name="GitHub Actions CI"
-  * Get SA permissions:
+  * Set SA permissions:
     gcloud projects add-iam-policy-binding projectfj \
     --member="serviceAccount:github-ci@projectfj.iam.gserviceaccount.com" \
     --role="roles/artifactregistry.writer"
@@ -25,10 +25,8 @@
       --role="roles/iam.workloadIdentityUser" \
       --member="principalSet://iam.googleapis.com/projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/attribute.repository/fjlenz/BuildToCloudRun"
 * Set Repo Secrets in: https://github.com/fjlenz/BuildToCloudRun/settings/secrets/actions
-  GCP_PROJECT_ID: projectfj
-  GCP_SA_EMAIL: `github-ci@projectfj.iam.gserviceaccount.com`
-  GCP_WORKLOAD_PROVIDER: projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/providers/fj-provider
-
+   * GCP_PROJECT_ID: projectfj
+   * GCP_SA_EMAIL: `github-ci@projectfj.iam.gserviceaccount.com`
+   * GCP_WORKLOAD_PROVIDER: projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/providers/fj-provider
 
 * see: https://medium.com/@hkayw95/how-to-securely-push-docker-images-from-github-actions-to-google-artifact-registry-0972ed554b64
-
