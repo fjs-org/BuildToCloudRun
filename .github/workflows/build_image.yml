@@ -27,9 +27,6 @@ jobs:
       - name: Build and Test with Maven
         run: mvn -B clean test
 
-      - name: List files after build
-        run: ls -lart
-
       - name: Build Docker Image
         run: docker build -t my-api:latest .
 

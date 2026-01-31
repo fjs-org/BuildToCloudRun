@@ -1,5 +1,5 @@
 # --- STAGE 1: Build ---
-FROM maven:3.9.6-eclipse-temurin-17 AS build
+FROM maven:3.9.9-eclipse-temurin-25 AS build
 WORKDIR /app
 
 # Copy only the pom.xml first to cache dependencies
