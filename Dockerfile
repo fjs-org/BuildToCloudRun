@@ -13,6 +13,7 @@ RUN mvn dependency:go-offline -B
 # Build the app
 COPY src ./src
 RUN mvn clean package -DskipTests
+RUN ls -la target/
 
 # --- STAGE 2: Runtime ---
 # JRE 25 is available and works perfectly

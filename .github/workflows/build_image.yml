@@ -28,7 +28,7 @@ jobs:
         run: mvn -B clean test
 
       - name: Build Docker Image
-        run: docker build -t my-api:latest .
+        run: docker build -t fj-hello-api:1.0.0 .
 
       - name: List Docker Images
         run: docker images
