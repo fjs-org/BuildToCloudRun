@@ -30,7 +30,5 @@
   GCP_WORKLOAD_PROVIDER: projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/providers/fj-provider
 
 
-
-
 * see: https://medium.com/@hkayw95/how-to-securely-push-docker-images-from-github-actions-to-google-artifact-registry-0972ed554b64
 
