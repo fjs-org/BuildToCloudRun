@@ -7,5 +7,9 @@ management:
         web:
           base-path: /
 
+server:
+  servlet:
+    context-path: /
+
 spring-doc:
   show-actuator: true
