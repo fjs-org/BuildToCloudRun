@@ -1,4 +1,4 @@
-name: Mvn Test and Docker build and push to GAR
+name: mvn-Test plus Docker build and push
 
 on:
   push:

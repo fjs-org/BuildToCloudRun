@@ -7,6 +7,7 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.equalToIgnoringCase;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.jwt;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -19,16 +20,17 @@ public class HelloControllerTest {
     private MockMvc mockMvc;
 
     @Test
-    void callingHelloAnswersWith400BadRequest() throws Exception {
+    void callingHelloWithMissingJWTAnswersWith401Unauthorized() throws Exception {
         mockMvc.perform(get("/hello"))
-                .andExpect(status().isBadRequest());
+                .andExpect(status().isUnauthorized());
     }
 
     @Test
-    void callingHelloHorstAnswersWith200HelloHorst() throws Exception {
-        mockMvc.perform(get("/hello").param("name", "Horst"))
+    void callingHelloHorstAnswersWith200HelloUser() throws Exception {
+        mockMvc.perform(get("/hello")
+                .with(jwt().jwt(builder -> builder.claim("email", "Horst"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("message", equalToIgnoringCase("Hello Horst")));
+                .andExpect(jsonPath("message", equalToIgnoringCase("Hello User")));
     }
 
 
