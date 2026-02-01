@@ -52,7 +52,8 @@ jobs:
 
       - name: Build and Push Docker image
         run: |
-          IMAGE_URI="europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/fj-image-repo/buildtocloudrun:${{ steps.prep-mvn-version.outputs.VERSION }}"
-          docker build -t "$IMAGE_URI" .
+          IMAGE_URI="europe-west3-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/fj-image-repo/buildtocloudrun:${{ github.sha }}"
+          TAG="${{ steps.prep-mvn-version.outputs.VERSION }}"
+          docker build -t buildtocloudrun:$TAG -t "$IMAGE_URI" .
           docker images
           docker push "$IMAGE_URI"
