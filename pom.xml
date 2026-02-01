@@ -50,13 +50,6 @@
 			<artifactId>spring-boot-starter-oauth2-resource-server</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>com.google.cloud</groupId>
-			<artifactId>spring-cloud-gcp-starter-logging</artifactId>
-			<version>7.4.3</version>
-			<scope>compile</scope>
-		</dependency>
-
 		<!-- test dependencies -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
