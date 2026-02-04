@@ -23,8 +23,8 @@
     * gcloud projects describe projectfj --format="value(projectNumber)"
     * gcloud iam service-accounts add-iam-policy-binding github-ci@projectfj.iam.gserviceaccount.com \
       --role="roles/iam.workloadIdentityUser" \
-      --member="principalSet://iam.googleapis.com/projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/attribute.repository/fjlenz/BuildToCloudRun"
-* Set Repo Secrets in: https://github.com/fjlenz/BuildToCloudRun/settings/secrets/actions
+      --member="principalSet://iam.googleapis.com/projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/attribute.repository_owner/fjs-org"
+* Set Repo Secrets in: https://github.com/organizations/fjs-org/settings/secrets/actions
    * GCP_PROJECT_ID: projectfj
    * GCP_SA_EMAIL: `github-ci@projectfj.iam.gserviceaccount.com`
    * GCP_WORKLOAD_PROVIDER: projects/129285069564/locations/global/workloadIdentityPools/fj-identity-pool/providers/fj-provider
