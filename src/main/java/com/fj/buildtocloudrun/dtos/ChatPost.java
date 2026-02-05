@@ -6,13 +6,13 @@ import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record ChatPost(
-        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
         UUID id,
 
-        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
         String from,
 
-        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED)
+        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
         LocalDateTime timestamp,
 
         @Schema(

@@ -42,10 +42,14 @@ public class ChatController {
 
         deferredResult.onTimeout(() -> {
             LOGGER.info("Get chatpost is timing out");
-            waitingRequests.remove(deferredResult);
-        });
-        deferredResult.onCompletion(() -> waitingRequests.remove(deferredResult));
+            deferredResult.setResult(chatMainHolder);
 
+        });
+        deferredResult.onCompletion(() -> {
+            LOGGER.info("Answering chatpost GET");
+        });
+
+        waitingRequests.remove(deferredResult);
         waitingRequests.add(deferredResult);
         return deferredResult;
     }
