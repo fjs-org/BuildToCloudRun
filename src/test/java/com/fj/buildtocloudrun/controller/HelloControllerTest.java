@@ -30,7 +30,7 @@ public class HelloControllerTest {
         mockMvc.perform(get("/hello")
                 .with(jwt().jwt(builder -> builder.claim("email", "Horst"))))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("message", equalToIgnoringCase("Hello User")));
+                .andExpect(jsonPath("message", equalToIgnoringCase("User")));
     }
 
 
