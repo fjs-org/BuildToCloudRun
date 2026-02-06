@@ -8,13 +8,19 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.async.DeferredResult;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Queue;
+import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Chat Management", description = "Endpoints for sending and receiving chat messages via Long Polling")
@@ -35,10 +41,22 @@ public class ChatController {
     })
     @GetMapping("/chatpost")
     @SecurityRequirement(name = "Authorization")
-    public List<ChatPost> getChatPosts() {
+    public List<ChatPost> getChatPosts(Principal principal) {
         LOGGER.info("Start returning current chatposts");
 
-        return chatMainHolder;
+        return mapIsCurrentUser(chatMainHolder, principal);
+    }
+
+    private List<ChatPost> mapIsCurrentUser(List<ChatPost> chatMainHolder, Principal principal) {
+        return chatMainHolder.stream()
+                .map(chatpost -> new ChatPost(
+                        chatpost.id(),
+                        chatpost.from(),
+                        chatpost.timestamp(),
+                        chatpost.from().equals(principal.getName()),
+                        chatpost.message()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Operation(
@@ -51,13 +69,13 @@ public class ChatController {
     })
     @GetMapping("/chatpostlongpoll")
     @SecurityRequirement(name = "Authorization")
-    public DeferredResult<List<ChatPost>> pollForMessages() {
+    public DeferredResult<List<ChatPost>> pollForMessages(Principal principal) {
         LOGGER.info("Start polling for new chatposts");
         DeferredResult<List<ChatPost>> deferredResult = new DeferredResult<>(2000L);
 
         deferredResult.onTimeout(() -> {
             LOGGER.info("Get chatpost is timing out");
-            deferredResult.setResult(chatMainHolder);
+            deferredResult.setResult(mapIsCurrentUser(chatMainHolder, principal));
 
         });
         deferredResult.onCompletion(() -> {
@@ -79,20 +97,19 @@ public class ChatController {
     })
     @PostMapping("/chatpost")
     @SecurityRequirement(name = "Authorization")
-    public ChatPost createPost(@RequestBody ChatPost post, Principal principal) {
+    public ResponseEntity<Void> createPost(@RequestBody ChatPost post, Principal principal) {
         LOGGER.info("Start creating new chatpost");
 
-        ChatPost mappedChatPost = new ChatPost(
-                UUID.randomUUID(), principal.getName(), LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS), post.message());
+        ChatPost mappedChatPost = new ChatPost(UUID.randomUUID(), principal.getName(), LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS), false, post.message());
         chatMainHolder.add(mappedChatPost);
 
         while (!waitingRequests.isEmpty()) {
             LOGGER.info("Iterating through waiting Requests");
             DeferredResult<List<ChatPost>> result = waitingRequests.poll();
             if (result != null) {
-                result.setResult(chatMainHolder);
+                result.setResult(mapIsCurrentUser(chatMainHolder, principal));
             }
         }
-        return mappedChatPost;
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 }

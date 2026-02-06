@@ -15,6 +15,9 @@ public record ChatPost(
         @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
         LocalDateTime timestamp,
 
+        @Schema(requiredMode = Schema.RequiredMode.NOT_REQUIRED, accessMode = Schema.AccessMode.READ_ONLY)
+        Boolean isCurrentUser,
+
         @Schema(
                 description = "The content of the chat message",
                 example = "Hello, how can I help you today?",
