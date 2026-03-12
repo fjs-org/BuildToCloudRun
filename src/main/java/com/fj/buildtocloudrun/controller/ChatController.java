@@ -15,12 +15,8 @@ import org.springframework.web.context.request.async.DeferredResult;
 
 import java.security.Principal;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.ArrayList;
-import java.util.Queue;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
-import java.util.stream.Collectors;
 
 @RestController
 @Tag(name = "Chat Management", description = "Endpoints for sending and receiving chat messages via Long Polling")
@@ -34,7 +30,7 @@ public class ChatController {
 
     @Operation(
             summary = "Get existing Chatposts",
-            description = ""
+            description = "Get Chatposts"
     )
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "Successfully received a new message")
@@ -42,8 +38,7 @@ public class ChatController {
     @GetMapping("/chatpost")
     @SecurityRequirement(name = "Authorization")
     public List<ChatPost> getChatPosts(Principal principal) {
-        LOGGER.info("Start returning current chatposts");
-
+        LOGGER.info("Start returning current chatposts: " + principal.getName());
         return chatMainHolder;
     }
 
@@ -58,7 +53,7 @@ public class ChatController {
     @GetMapping("/chatpostlongpoll")
     @SecurityRequirement(name = "Authorization")
     public DeferredResult<List<ChatPost>> pollForMessages(Principal principal) {
-        LOGGER.info("Start polling for new chatposts");
+        LOGGER.info("Start polling for new chatposts: " + principal.getName());
         DeferredResult<List<ChatPost>> deferredResult = new DeferredResult<>(2000L);
 
         deferredResult.onTimeout(() -> {
@@ -66,9 +61,9 @@ public class ChatController {
             deferredResult.setResult(chatMainHolder);
 
         });
-        deferredResult.onCompletion(() -> {
-            LOGGER.info("Answering chatpost GET");
-        });
+        deferredResult.onCompletion(() ->
+            LOGGER.info("Answering chatpost GET")
+        );
 
         waitingRequests.remove(deferredResult);
         waitingRequests.add(deferredResult);
@@ -86,7 +81,7 @@ public class ChatController {
     @PostMapping("/chatpost")
     @SecurityRequirement(name = "Authorization")
     public ResponseEntity<Void> createPost(@RequestBody ChatPost post, Principal principal) {
-        LOGGER.info("Start creating new chatpost");
+        LOGGER.info("Start creating new chatpost: " + principal.getName());
 
         ChatPost mappedChatPost = new ChatPost(UUID.randomUUID(), principal.getName(), LocalDateTime.now().truncatedTo(java.time.temporal.ChronoUnit.SECONDS), post.message());
         chatMainHolder.add(mappedChatPost);
